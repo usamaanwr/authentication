@@ -2,10 +2,12 @@ import express, { json } from "express"
 import cors from "cors"
 const app = express()
 import dotenv from "dotenv"
+import cookieParser from "cookie-parser"
 import { userRouter } from "./routes/user.routes.js"
 dotenv.config()
 
 app.use(express.json())
+app.use(cookieParser())
 app.use(cors({
     origin: process.env.CORS_ORIGIN || "http://localhost:3000",
     credential: true
