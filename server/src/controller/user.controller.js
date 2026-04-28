@@ -34,13 +34,18 @@ const registerUser = asyncHandler(async (req, res) => {
   // remove password and refresh token field form response
   // check for user creation
   // return res
-
-  const { error } = userRegisterValidation(req.body);
+  const avatarBuffer = req.files?.avatar[0]?.buffer;
+  const validationData = {
+    ...req.body,   
+    avatar : avatarBuffer,
+  }
+  
+  const { error } = userRegisterValidation(validationData);
   if (error) {
     throw new ApiError(400, error.details[0].message);
   }
 
-  const { fullName, email, password } = req.body;
+  const { fullName, email, password , username} = req.body;
   console.log(req.body);
 
   if ([fullName, email, password].some((field) => field?.trim() === "")) {
@@ -51,16 +56,11 @@ const registerUser = asyncHandler(async (req, res) => {
   });
 
   if (existedUser) {
-    throw new ApiError(409, "User with email or fullName already exists");
+    throw new ApiError(409, "User with this email or username already exists");
   }
 
-  const avatarLocalPath = req.files?.avatar[0]?.path;
 
-  if (!avatarLocalPath) {
-    throw new ApiError(400, "Avatar file is required");
-  }
-
-  const avatar = await uploadOnCloudinary(avatarLocalPath, "users_avatars");
+  const avatar = await uploadOnCloudinary(avatarBuffer, "users_avatars");
 
   if (!avatar) {
     throw new ApiError(400, "Avatar upload failed on Cloudinary");
@@ -68,6 +68,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
   const user = await User.create({
     fullName,
+    username: username.toLowerCase(),
     email,
     password,
     avatar: avatar.url,
@@ -93,14 +94,14 @@ const loginUser = asyncHandler(async (req, res) => {
   // access and refresh token
   // send cookie
 
-  const { email, password, fullName } = req.body;
+  const { email, password, fullName , username } = req.body;
 console.log(req.body);
 
-  if (!email && !fullName) {
-    throw new ApiError(400, "email or fullname is required!!");
+  if (!email && !username) {
+    throw new ApiError(400, "email or username is required!!");
   }
   const user = await User.findOne({
-    $or:[{email},{fullName}]
+    $or:[{email},{username}]
   })
 if (!user) {
     throw new ApiError(400, "user does not exist");
