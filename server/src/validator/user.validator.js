@@ -1,13 +1,15 @@
-import Joi  from "joi";
+    import Joi  from "joi";
 
-export  const userRegisterValidation = (data)=>{
-    const schema = Joi.object({
-        fullName: Joi.string().min(6).max(12).required().trim(),
-         password: Joi.string().min(6).max(10).required(),
-         email:Joi.string().email({
-            minDomainSegments: 2,
-            tlds:{allow: ['com' , 'net']}
-         }).required()
-    })
-    return schema.validate(data)
-}
+    export  const userRegisterValidation = (data)=>{
+        const schema = Joi.object({
+            fullName: Joi.string().min(3).max(20).required().trim(),
+        username: Joi.string().alphanum().min(3).max(20).required(),
+            password: Joi.string().min(6).max(10).required(),
+            email:Joi.string().email({
+                minDomainSegments: 2,
+                tlds:{allow: ['com' , 'net']}
+            }).required(),
+            avatar: Joi.string().required()
+        })
+        return schema.validate(data)
+    }
