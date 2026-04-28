@@ -9,7 +9,7 @@
                 minDomainSegments: 2,
                 tlds:{allow: ['com' , 'net']}
             }).required(),
-            avatar: Joi.string().required()
+            avatar: Joi.any().required()
         })
         return schema.validate(data)
     }
