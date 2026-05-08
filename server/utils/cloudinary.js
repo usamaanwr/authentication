@@ -10,14 +10,14 @@ cloudinary.config({
 
 const uploadOnCloudinary = async (fileBuffer, foldername) => {
   return new Promise((resolve , reject)=>{
-    const stream = cloudinary.uploader.upload_stream(
+    let uploadStream = cloudinary.uploader.upload_stream(
       {resource_type: "auto" , folder: foldername},
       (error , result)=> {
         if(error) reject(error);
         else resolve(result);
       }
     );
-    stremifier.createReadStream(fileBuffer).pipe(stream);
+    streamifier.createReadStream(fileBuffer).pipe(uploadStream);
   })
   // try {
   //   if (!localFilePath) return null;
