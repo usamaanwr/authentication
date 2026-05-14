@@ -66,13 +66,12 @@ function Register() {
     <div className="hero bg-base-200 min-h-screen">
       <div className="hero-content flex-col lg:flex-row-reverse">
         <div className="text-center lg:text-left">
-          <h1 className="text-5xl font-bold">Register now!</h1>
-          <p className="py-6">
-            Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda
-            excepturi exercitationem quasi.
-          </p>
-        </div>
-
+  <h1 className="text-5xl font-bold">Register now!</h1>
+  <p className="py-6">
+    Don't miss out on the latest updates and exclusive offers. 
+    Sign up today and get the most out of our platform.
+  </p>
+</div>
         <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
           <div className="card-body">
             <form onSubmit={handleSubmit}>
@@ -116,7 +115,7 @@ function Register() {
                 <input
                   type="email"
                   className={`input w-full ${errors.email ? "input-error" : ""}`}
-                  placeholder="shaheer@gmail.com"
+                  placeholder="Email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />

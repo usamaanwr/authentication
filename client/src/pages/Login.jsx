@@ -2,31 +2,49 @@ import { useState } from "react"
 import { Link, useNavigate, useLocation } from "react-router-dom"
 import axiosInstance from "../api/axiosInstance"
 import { useAuth } from "../context/AuthContext"
+import { loginSchema } from "../validations/loginSchema"
 
 function Login() {
   const navigate = useNavigate()
   const location = useLocation()
   const { login } = useAuth()
-  
+
   const successMsg = location.state?.message || ""
-  
+
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState("")
+  const [errors, setErrors] = useState({}) // ← {} hona chahiye string nahi
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setLoading(true)
-    setError("")
+    setErrors({})
 
+    // Yup validation — loading start mat karo abhi
+    try {
+      await loginSchema.validate(
+        { email, password },
+        { abortEarly: false }
+      )
+    } catch (err) {
+      const fieldErrors = {}
+      err.inner.forEach((e) => {
+        fieldErrors[e.path] = e.message
+      })
+      return setErrors(fieldErrors) // ← spinner nahi ghoomega
+    }
+
+    // Sirf yahan loading start karo
+    setLoading(true)
     try {
       const res = await axiosInstance.post("/user/login", { email, password })
       const userData = res.data?.data?.user
-      login(userData) // Context mein user set karo
+      login(userData)
       navigate("/dashboard")
     } catch (err) {
-      setError(err.response?.data?.message || "Something went wrong!")
+      console.log(err) // ← yeh add karo
+
+      setErrors({ api: err.response?.data?.message || "Something went wrong!" })
     } finally {
       setLoading(false)
     }
@@ -36,13 +54,12 @@ function Login() {
     <div className="hero bg-base-200 min-h-screen">
       <div className="hero-content flex-col lg:flex-row-reverse">
         <div className="text-center lg:text-left">
-          <h1 className="text-5xl font-bold">Login now!</h1>
+          <h1 className="text-5xl font-bold">Welcome Back!</h1>
           <p className="py-6">
-            Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem
-            quasi. In deleniti eaque aut repudiandae et a id nisi.
+            Log in to your account to access your dashboard, manage your projects,
+            and stay connected with your team.
           </p>
         </div>
-
         <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
           <div className="card-body">
             <form onSubmit={handleSubmit}>
@@ -54,36 +71,44 @@ function Login() {
                   </div>
                 )}
 
+                {/* API Error */}
+                {errors.api && (
+                  <div className="alert alert-error py-2 text-sm mb-2">
+                    {errors.api}
+                  </div>
+                )}
+
+                {/* Email */}
                 <label className="label">Email</label>
                 <input
                   type="email"
-                  className="input w-full"
-                  placeholder="email"
+                  className={`input w-full ${errors.email ? "input-error" : ""}`}
+                  placeholder="Email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  required
                 />
+                {errors.email && (
+                  <p className="text-error text-xs mt-1">{errors.email}</p>
+                )}
 
+                {/* Password */}
                 <label className="label">Password</label>
                 <input
                   type="password"
-                  className="input w-full"
-                  placeholder=""
+                  className={`input w-full ${errors.password ? "input-error" : ""}`}
+                  placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  required
                 />
+                {errors.password && (
+                  <p className="text-error text-xs mt-1">{errors.password}</p>
+                )}
 
                 <div>
                   <a className="link link-hover text-sm">Forgot password?</a>
                 </div>
 
-                {error && (
-                  <div className="alert alert-error py-2 text-sm mt-2">
-                    {error}
-                  </div>
-                )}
-
+                {/* Submit */}
                 <button
                   type="submit"
                   className="btn btn-neutral mt-4 w-full"
@@ -91,9 +116,7 @@ function Login() {
                 >
                   {loading ? (
                     <span className="loading loading-spinner"></span>
-                  ) : (
-                    "Login"
-                  )}
+                  ) : "Login"}
                 </button>
 
                 <p className="text-center text-sm mt-2">
