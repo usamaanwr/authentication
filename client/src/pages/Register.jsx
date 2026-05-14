@@ -89,7 +89,7 @@ function Register() {
                 <input
                   type="text"
                   className={`input w-full ${errors.fullName ? "input-error" : ""}`}
-                  placeholder="Shaheer Ahmed"
+                  placeholder="Full Name"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                 />
@@ -102,7 +102,7 @@ function Register() {
                 <input
                   type="text"
                   className={`input w-full ${errors.username ? "input-error" : ""}`}
-                  placeholder="shaheer123"
+                  placeholder="User Name"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                 />
@@ -128,7 +128,7 @@ function Register() {
                 <input
                   type="password"
                   className={`input w-full ${errors.password ? "input-error" : ""}`}
-                  placeholder="••••••••"
+                  placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
