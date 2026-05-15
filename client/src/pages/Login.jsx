@@ -10,13 +10,13 @@ function Login() {
   const { login } = useAuth()
 
   const [successToast, setSuccessToast] = useState("")
-  useEffect(() => {
-    if (location.state?.message) {
-      setSuccessToast(location.state.message)
-      setTimeout(() => setSuccessToast(""), 3000)
-      navigate(location.pathname, { replace: true, state: {} })
-    }
-  }, [])
+ useEffect(() => {
+  if (location.state?.message) {
+    setSuccessToast(location.state.message)
+    setTimeout(() => setSuccessToast(""), 3000)
+    navigate(location.pathname, { replace: true, state: {} })
+  }
+}, [location.state?.message])
 
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
