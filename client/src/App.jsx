@@ -16,7 +16,7 @@ function App() {
 
           {/* Saare pages ke routes yahan handle honge */}
           <Routes>
-            <Route path="/" element={<Navigate to="/register" />} />
+            <Route path="/" element={<Register to="/register" />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/dashboard" element={<ProtectedRoute>
