@@ -50,7 +50,7 @@ function Register() {
         headers: { "Content-Type": "multipart/form-data" }
       })
       navigate("/login", {
-        // state: { message: "Registration successful! Please login." }
+        state: { message: "Registration successful! Please login." }
       })
     } catch (err) {
       // console.log("backend error" , err.response.data);

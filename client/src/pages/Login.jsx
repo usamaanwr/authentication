@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Link, useNavigate, useLocation } from "react-router-dom"
 import axiosInstance from "../api/axiosInstance"
 import { useAuth } from "../context/AuthContext"
@@ -9,18 +9,24 @@ function Login() {
   const location = useLocation()
   const { login } = useAuth()
 
-  const successMsg = location.state?.message || ""
+  const [successToast, setSuccessToast] = useState("")
+  useEffect(() => {
+    if (location.state?.message) {
+      setSuccessToast(location.state.message)
+      setTimeout(() => setSuccessToast(""), 3000)
+      navigate(location.pathname, { replace: true, state: {} })
+    }
+  }, [])
 
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
-  const [errors, setErrors] = useState({}) // ← {} hona chahiye string nahi
+  const [errors, setErrors] = useState({})
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setErrors({})
 
-    // Yup validation — loading start mat karo abhi
     try {
       await loginSchema.validate(
         { email, password },
@@ -31,10 +37,9 @@ function Login() {
       err.inner.forEach((e) => {
         fieldErrors[e.path] = e.message
       })
-      return setErrors(fieldErrors) // ← spinner nahi ghoomega
+      return setErrors(fieldErrors) 
     }
 
-    // Sirf yahan loading start karo
     setLoading(true)
     try {
       const res = await axiosInstance.post("/user/login", { email, password })
@@ -65,9 +70,11 @@ function Login() {
             <form onSubmit={handleSubmit}>
               <fieldset className="fieldset">
 
-                {successMsg && (
-                  <div className="alert alert-success py-2 text-sm mb-2">
-                    {successMsg}
+                {successToast && (
+                  <div className="toast toast-top toast-end z-50">
+                    <div className="alert alert-success">
+                      <span>{successToast}</span>
+                    </div>
                   </div>
                 )}
 
