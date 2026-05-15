@@ -53,7 +53,7 @@ function Register() {
         state: { message: "Registration successful! Please login." }
       })
     } catch (err) {
-      // console.log("backend error" , err.response.data);
+      console.log("backend error" , err.response.data);
       setErrors({
         api: err.response?.data?.message || "Something went wrong!"
       })
