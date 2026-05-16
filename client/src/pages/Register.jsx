@@ -2,6 +2,7 @@ import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import axiosInstance from "../api/axiosInstance"
 import { registerSchema } from "../validations/registerSchema"
+import toast from "react-hot-toast"
 
 function Register() {
   const navigate = useNavigate()
@@ -33,6 +34,7 @@ function Register() {
       err.inner.forEach((e) => {
         fieldErrors[e.path] = e.message
       })
+      toast.error("Please fix the validation errors")
       return setErrors(fieldErrors)
     }
 
@@ -49,8 +51,8 @@ function Register() {
       await axiosInstance.post("/user/register", formData, {
         headers: { "Content-Type": "multipart/form-data" }
       })
+      toast.success("Registration successful! Please login")
       navigate("/login", {
-        state: { message: "Registration successful! Please login." }
       })
     } catch (err) {
       // console.log("backend error" , err.response.data);
@@ -91,6 +93,7 @@ function Register() {
                   className={`input w-full ${errors.fullName ? "input-error" : ""}`}
                   placeholder="Full Name"
                   value={fullName}
+                  required
                   onChange={(e) => setFullName(e.target.value)}
                 />
                 {errors.fullName && (
@@ -104,6 +107,7 @@ function Register() {
                   className={`input w-full ${errors.username ? "input-error" : ""}`}
                   placeholder="User Name"
                   value={username}
+                  required
                   onChange={(e) => setUsername(e.target.value)}
                 />
                 {errors.username && (
@@ -117,6 +121,7 @@ function Register() {
                   className={`input w-full ${errors.email ? "input-error" : ""}`}
                   placeholder="Email"
                   value={email}
+                  required
                   onChange={(e) => setEmail(e.target.value)}
                 />
                 {errors.email && (
@@ -130,6 +135,7 @@ function Register() {
                   className={`input w-full ${errors.password ? "input-error" : ""}`}
                   placeholder="Password"
                   value={password}
+                  required
                   onChange={(e) => setPassword(e.target.value)}
                 />
                 {errors.password && (
