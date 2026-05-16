@@ -1,14 +1,20 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-
+import toast from "react-hot-toast"
 function Navbar() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
 
   const handleLogout = async () => {
-    await logout()
-    navigate("/login")
+    try {
+      
+      await logout()
+      toast.success("Logged out successfully! See you soon. ")
+      navigate("/login")
+    } catch (error) {
+      toast.error("Logout failed! Try again.")
+    }
   }
 
   return (
@@ -25,7 +31,6 @@ function Navbar() {
       {/* End Section */}
       <div className="navbar-end gap-3">
 
-        {/* Agar user login nahi hai — Login + Register dikhao */}
         {!user ? (
           <>
             <Link
@@ -42,7 +47,6 @@ function Navbar() {
             </Link>
           </>
         ) : (
-          /* Agar user login hai — Avatar + Logout dikhao */
           <>
             <div className="avatar">
               {/* <div className="w-9 rounded-full ring ring-emerald-500 ring-offset-2">

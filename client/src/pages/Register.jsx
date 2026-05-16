@@ -34,7 +34,6 @@ function Register() {
       err.inner.forEach((e) => {
         fieldErrors[e.path] = e.message
       })
-      toast.error("Please fix the validation errors")
       return setErrors(fieldErrors)
     }
 
